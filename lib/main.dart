@@ -4,6 +4,7 @@ import 'home_page.dart';
 import 'profile_page.dart';
 import 'chat_page.dart';
 import 'group_page.dart';
+import 'register_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,6 +26,8 @@ class MyApp extends StatelessWidget {
         '/profile': (context) => ProfilePage(),
         '/chat': (context) => ChatPage(),
         '/group': (context) => GroupPage(),
+        '/register': (context) =>
+            RegisterPage(), // Nouvelle route pour la page d'inscription
       },
     );
   }

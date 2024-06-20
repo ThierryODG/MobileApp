@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'home_page.dart';
-import 'register_page.dart'; // Assurez-vous d'importer votre page d'inscription
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
+class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
-  Future<void> _signIn() async {
+  Future<void> _register() async {
     final response = await http.post(
-      Uri.parse('http://192.168.100.20:3000/login'),
+      Uri.parse('http://192.168.100.20:3000/register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'email': _emailController.text,
+        'username': _usernameController.text,
         'password': _passwordController.text,
+        'email': _emailController.text,
+        'name': _nameController.text,
       }),
     );
 
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
       if (result['success']) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
+        Navigator.pop(context);
       } else {
         _showErrorDialog(result['message']);
       }
@@ -61,35 +60,32 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('Create Account')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/logo.png', height: 100), // Add your logo here
-            SizedBox(height: 20),
+          children: <Widget>[
             TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Login'),
+              controller: _usernameController,
+              decoration: InputDecoration(labelText: 'Username'),
             ),
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+            ),
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(labelText: 'Name'),
+            ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _signIn,
-              child: Text('Se connecter'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegisterPage()),
-                );
-              },
-              child: Text('Créer un compte ?'),
+              onPressed: _register,
+              child: Text('Register'),
             ),
           ],
         ),
